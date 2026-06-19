@@ -1,0 +1,46 @@
+{
+  "labelType": "B",
+  "pageWidth": 320,
+  "pageHeight": 420,
+  "elements": [
+    { "type": "border" },
+
+    { "type": "text", "value": "SSCC", "x": 15, "y": 390, "size": 13, "bold": true },
+    { "type": "text", "template": "{sscc}", "x": 15, "y": 372, "size": 11 },
+
+    { "type": "text", "value": "Content", "x": 15, "y": 345, "size": 13, "bold": true },
+    { "type": "text", "template": "{content}", "x": 15, "y": 327, "size": 11 },
+
+    { "type": "text", "value": "Count", "x": 230, "y": 345, "size": 13, "bold": true },
+    { "type": "text", "template": "{count}", "x": 230, "y": 327, "size": 11 },
+
+    { "type": "text", "value": "Use by", "x": 15, "y": 300, "size": 13, "bold": true },
+    { "type": "text", "template": "{useBy}", "x": 15, "y": 282, "size": 11 },
+
+    { "type": "text", "value": "Variant", "x": 140, "y": 300, "size": 13, "bold": true },
+    { "type": "text", "template": "{variant}", "x": 140, "y": 282, "size": 11 },
+
+    { "type": "text", "value": "Batch No.", "x": 230, "y": 300, "size": 13, "bold": true },
+    { "type": "text", "template": "{batchNo}", "x": 230, "y": 282, "size": 11 },
+
+    {
+      "type": "gs1_barcode",
+      "x": 15, "y": 195, "scale": 0.36,
+      "aiFields": [
+        { "ai": "02", "field": "content" },
+        { "ai": "17", "field": "useBySLEDRaw" },
+        { "ai": "37", "field": "count" }
+      ]
+    },
+
+    {
+      "type": "gs1_barcode",
+      "x": 15, "y": 60, "scale": 0.36,
+      "aiFields": [
+        { "ai": "00", "field": "sscc" },
+        { "ai": "20", "field": "variant" },
+        { "ai": "10", "field": "batchNo" }
+      ]
+    }
+  ]
+}
