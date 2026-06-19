@@ -1,0 +1,14 @@
+{
+  "name": "whm-hu-label-service",
+  "version": "1.0.0",
+  "description": "Generates an HU label PDF (number + barcode) from an HU number",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "bwip-js": "^4.11.1",
+    "express": "^5.2.1",
+    "pdf-lib": "^1.17.1"
+  }
+}
