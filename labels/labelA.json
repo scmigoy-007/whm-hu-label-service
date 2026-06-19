@@ -1,0 +1,11 @@
+{
+  "labelType": "A",
+  "pageWidth": 320,
+  "pageHeight": 200,
+  "elements": [
+    { "type": "border" },
+    { "type": "text", "value": "HU LABEL", "x": 15, "y": 165, "size": 12, "bold": true },
+    { "type": "barcode", "field": "huNumber", "x": 15, "y": 80, "scale": 0.45 },
+    { "type": "text", "template": "HU:   {huNumber}", "x": 15, "y": 50, "size": 16 }
+  ]
+}
