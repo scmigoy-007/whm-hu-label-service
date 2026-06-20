@@ -1,0 +1,8 @@
+applications:
+  - name: whm-hu-label-service
+    memory: 128M
+    disk_quota: 256M
+    instances: 1
+    buildpacks:
+      - nodejs_buildpack
+    command: npm start
