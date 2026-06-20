@@ -1,0 +1,102 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "HU Validation Service (S/4 Handling Unit)",
+    "description": "Validates a Handling Unit in S/4 and retrieves its item-level data (Material, Batch, Quantity) needed for label generation. Wraps the standard SAP API_HANDLINGUNIT OData service.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://{host}:{port}/sap/opu/odata4/sap/api_handlingunit/srvd_a2x/sap/handlingunit/0001",
+      "description": "S/4 OData service (actual host/port supplied via Destination)",
+      "variables": {
+        "host": { "default": "" },
+        "port": { "default": "" }
+      }
+    }
+  ],
+  "paths": {
+    "/HandlingUnit/{HandlingUnitExternalID}/{Warehouse}/_HandlingUnitItem": {
+      "get": {
+        "operationId": "validateHU",
+        "summary": "Validate an HU and retrieve its item data",
+        "description": "Given an HU number and Warehouse number, returns the item-level data for that Handling Unit, including Material, Batch, and Quantity. If the HU does not exist, the response will be empty/not found.",
+        "parameters": [
+          {
+            "name": "HandlingUnitExternalID",
+            "in": "path",
+            "required": true,
+            "description": "The Handling Unit number to validate",
+            "schema": { "type": "string" },
+            "example": "9000000756"
+          },
+          {
+            "name": "Warehouse",
+            "in": "path",
+            "required": true,
+            "description": "The Warehouse number the HU belongs to",
+            "schema": { "type": "string" },
+            "example": "1710"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "HU found — returns item-level data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "HandlingUnitExternalID": {
+                            "type": "string",
+                            "description": "HU number (also used as SSCC for Label B)",
+                            "example": "9000000756"
+                          },
+                          "Warehouse": {
+                            "type": "string",
+                            "example": "1710"
+                          },
+                          "Material": {
+                            "type": "string",
+                            "description": "Material number (used as 'content' for Label B)",
+                            "example": "15012345678907"
+                          },
+                          "Batch": {
+                            "type": "string",
+                            "description": "Batch number (used as 'batchNo' for Label B)",
+                            "example": "1234AB"
+                          },
+                          "HandlingUnitQuantity": {
+                            "type": "string",
+                            "description": "Quantity packed in the HU (used as 'count' for Label B)",
+                            "example": "110"
+                          },
+                          "Plant": {
+                            "type": "string",
+                            "example": "1710"
+                          },
+                          "StorageLocation": {
+                            "type": "string",
+                            "example": "0001"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "HU not found / invalid"
+          }
+        }
+      }
+    }
+  }
+}
