@@ -1,0 +1,173 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "HU Label Generation Service",
+    "description": "Generates a printable HU label PDF. Supports two label types: Type A (simple HU number + barcode) and Type B (GS1-compliant label with SSCC, content/GTIN, batch, SLED, count, and variant, rendered with two GS1-128 barcodes).\n",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://whm-hu-label-service.cfapps.eu10-004.hana.ondemand.com",
+      "description": "SAP BTP Cloud Foundry deployment"
+    }
+  ],
+  "paths": {
+    "/generate-hu-label": {
+      "post": {
+        "operationId": "generateHuLabel",
+        "summary": "Generate an HU label PDF",
+        "description": "Given a labelType and the relevant data fields, builds a PDF label and returns a link to download/preview it. Use labelType \"A\" for a simple HU-number-only label, or \"B\" for a full GS1-compliant label.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "labelType"
+                ],
+                "properties": {
+                  "labelType": {
+                    "type": "string",
+                    "enum": [
+                      "A",
+                      "B"
+                    ],
+                    "description": "Which label format to generate. \"A\" = simple HU label (needs huNumber only). \"B\" = GS1 label (needs sscc, content, count, useBy, useBySLEDRaw, variant, batchNo).\n"
+                  },
+                  "huNumber": {
+                    "type": "string",
+                    "description": "Handling Unit number (required for labelType \"A\")",
+                    "example": "9000000756"
+                  },
+                  "sscc": {
+                    "type": "string",
+                    "description": "18-digit Serial Shipping Container Code (required for labelType \"B\")",
+                    "example": "050123450001234563"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "GTIN / material content code (required for labelType \"B\")",
+                    "example": "15012345678907"
+                  },
+                  "count": {
+                    "type": "string",
+                    "description": "Quantity/count (required for labelType \"B\")",
+                    "example": "110"
+                  },
+                  "useBy": {
+                    "type": "string",
+                    "description": "Human-readable Shelf Life Expiry Date, e.g. DD.MM.YY (required for labelType \"B\")",
+                    "example": "25.12.13"
+                  },
+                  "useBySLEDRaw": {
+                    "type": "string",
+                    "description": "SLED in GS1 barcode format YYMMDD (required for labelType \"B\")",
+                    "example": "131225"
+                  },
+                  "variant": {
+                    "type": "string",
+                    "description": "Variant code (required for labelType \"B\")",
+                    "example": "05"
+                  },
+                  "batchNo": {
+                    "type": "string",
+                    "description": "Batch number (required for labelType \"B\")",
+                    "example": "1234AB"
+                  }
+                },
+                "example": {
+                  "labelType": "B",
+                  "sscc": "050123450001234563",
+                  "content": "15012345678907",
+                  "count": "110",
+                  "useBy": "25.12.13",
+                  "useBySLEDRaw": "131225",
+                  "variant": "05",
+                  "batchNo": "1234AB"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Label generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "labelType": {
+                      "type": "string",
+                      "example": "B"
+                    },
+                    "pdfUrl": {
+                      "type": "string",
+                      "description": "Direct link to view/download the generated PDF label",
+                      "example": "https://whm-hu-label-service.cfapps.eu10-004.hana.ondemand.com/label/B-050123450001234563-1781909988238.pdf"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request \u2014 missing or invalid labelType/fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Unknown labelType \"C\". Available: A, B"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "healthCheck",
+        "summary": "Check if the label service is running",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "labelTypes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "A",
+                        "B"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
