@@ -16,27 +16,19 @@
     }
   ],
   "paths": {
-    "/HandlingUnit/{HandlingUnitExternalID}/{Warehouse}/_HandlingUnitItem": {
+    "/HandlingUnitItem": {
       "get": {
         "operationId": "validateHU",
         "summary": "Validate an HU and retrieve its item data",
-        "description": "Given an HU number and Warehouse number, returns the item-level data for that Handling Unit, including Material, Batch, and Quantity. If the HU does not exist, the response will be empty/not found.",
+        "description": "Given an HU number and Warehouse number, returns the item-level data for that Handling Unit, including Material, Batch, and Quantity. If the HU does not exist, the response 'value' array will be empty.",
         "parameters": [
           {
-            "name": "HandlingUnitExternalID",
-            "in": "path",
+            "name": "$filter",
+            "in": "query",
             "required": true,
-            "description": "The Handling Unit number to validate",
+            "description": "OData filter expression to match the HU and Warehouse. Construct as: HandlingUnitExternalID eq '<huNumber>' and Warehouse eq '<warehouse>'",
             "schema": { "type": "string" },
-            "example": "9000000756"
-          },
-          {
-            "name": "Warehouse",
-            "in": "path",
-            "required": true,
-            "description": "The Warehouse number the HU belongs to",
-            "schema": { "type": "string" },
-            "example": "1710"
+            "example": "HandlingUnitExternalID eq '14920' and Warehouse eq 'BS01'"
           }
         ],
         "responses": {
