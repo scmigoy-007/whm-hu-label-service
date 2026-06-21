@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "HU Validation Service (S/4 Handling Unit)",
-    "description": "Validates a Handling Unit in S/4 and retrieves its item-level data (Material, Batch, Quantity) needed for label generation. Wraps the standard SAP API_HANDLINGUNIT OData service.",
+    "description": "Validates a Handling Unit in S/4 and retrieves its item-level data (Material, Batch, Quantity) needed for label generation. Wraps the standard SAP API_HANDLINGUNIT OData service, /HandlingUnitItem entity.",
     "version": "1.0.0"
   },
   "servers": [
@@ -23,58 +23,119 @@
         "description": "Given an HU number and Warehouse number, returns the item-level data for that Handling Unit, including Material, Batch, and Quantity. If the HU does not exist, the response 'value' array will be empty.",
         "parameters": [
           {
-            "name": "$filter",
+            "name": "HandlingUnitExternalID",
             "in": "query",
             "required": true,
-            "description": "OData filter expression to match the HU and Warehouse. Construct as: HandlingUnitExternalID eq '<huNumber>' and Warehouse eq '<warehouse>'",
+            "description": "The Handling Unit number to validate. This value is used to build the $filter sent to S/4 (HandlingUnitExternalID eq '<value>').",
+            "schema": { "type": "string" },
+            "example": "14920"
+          },
+          {
+            "name": "Warehouse",
+            "in": "query",
+            "required": true,
+            "description": "The Warehouse number the HU belongs to. This value is used to build the $filter sent to S/4 (Warehouse eq '<value>').",
+            "schema": { "type": "string" },
+            "example": "BS01"
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "required": false,
+            "description": "Filter items by property values, see OData Filtering. For this action, always construct as: HandlingUnitExternalID eq '<HandlingUnitExternalID>' and Warehouse eq '<Warehouse>'",
             "schema": { "type": "string" },
             "example": "HandlingUnitExternalID eq '14920' and Warehouse eq 'BS01'"
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "required": false,
+            "description": "Show only the first n items, see Paging - Top",
+            "schema": { "type": "integer", "minimum": 0 },
+            "example": 50
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "required": false,
+            "description": "Skip the first n items, see Paging - Skip",
+            "schema": { "type": "integer", "minimum": 0 }
+          },
+          {
+            "name": "$count",
+            "in": "query",
+            "required": false,
+            "description": "Include count of items, see Count",
+            "schema": { "type": "boolean" }
+          },
+          {
+            "name": "$select",
+            "in": "query",
+            "required": false,
+            "description": "Select properties to be returned, see Select. Recommended: HandlingUnitExternalID,Warehouse,Material,Batch,HandlingUnitQuantity,Plant,StorageLocation",
+            "schema": { "type": "string" },
+            "example": "HandlingUnitExternalID,Warehouse,Material,Batch,HandlingUnitQuantity,Plant,StorageLocation"
+          },
+          {
+            "name": "$orderby",
+            "in": "query",
+            "required": false,
+            "description": "Order items by property values, see Sorting",
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
           "200": {
-            "description": "HU found — returns item-level data",
+            "description": "Retrieved entities",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "@odata.count": {
+                      "type": "integer"
+                    },
                     "value": {
                       "type": "array",
+                      "description": "Empty array means the HU/Warehouse combination was not found (invalid HU)",
                       "items": {
                         "type": "object",
                         "properties": {
                           "HandlingUnitExternalID": {
                             "type": "string",
                             "description": "HU number (also used as SSCC for Label B)",
-                            "example": "9000000756"
+                            "example": "14920"
                           },
                           "Warehouse": {
                             "type": "string",
-                            "example": "1710"
+                            "example": "BS01"
+                          },
+                          "StockItemUUID": {
+                            "type": "string"
+                          },
+                          "HandlingUnitItem": {
+                            "type": "string"
                           },
                           "Material": {
                             "type": "string",
-                            "description": "Material number (used as 'content' for Label B)",
-                            "example": "15012345678907"
+                            "description": "Material number (used as 'content' for Label B)"
                           },
                           "Batch": {
                             "type": "string",
-                            "description": "Batch number (used as 'batchNo' for Label B)",
-                            "example": "1234AB"
+                            "description": "Batch number (used as 'batchNo' for Label B)"
+                          },
+                          "Plant": {
+                            "type": "string"
+                          },
+                          "StorageLocation": {
+                            "type": "string"
                           },
                           "HandlingUnitQuantity": {
                             "type": "string",
-                            "description": "Quantity packed in the HU (used as 'count' for Label B)",
-                            "example": "110"
+                            "description": "Quantity packed in the HU (used as 'count' for Label B)"
                           },
-                          "Plant": {
-                            "type": "string",
-                            "example": "1710"
-                          },
-                          "StorageLocation": {
-                            "type": "string",
-                            "example": "0001"
+                          "HandlingUnitQuantityUnit": {
+                            "type": "string"
                           }
                         }
                       }
