@@ -1,0 +1,178 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Handling Unit Item",
+    "version": "1.0.0",
+    "description": "Get entities from related _HandlingUnitItem"
+  },
+  "paths": {
+    "/sap/opu/odata4/sap/api_handlingunit/srvd_a2x/sap/handlingunit/0001/HandlingUnitItem": {
+      "get": {
+        "operationId": "getHandlingUnitItems",
+        "summary": "Get Handling Unit Items",
+        "description": "Returns HandlingUnitItem entities for a Handling Unit.",
+        "parameters": [
+          {
+            "name": "HandlingUnitExternalID",
+            "in": "query",
+            "required": true,
+            "description": "External Handling Unit Identification",
+            "schema": {
+              "type": "string",
+              "maxLength": 20
+            }
+          },
+          {
+            "name": "Warehouse",
+            "in": "query",
+            "required": true,
+            "description": "Warehouse Number/Warehouse Complex. Use empty string for IM-managed storage locations.",
+            "schema": {
+              "type": "string",
+              "maxLength": 4
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "$orderby",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Handling Unit Item Collection",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandlingUnitItemCollection"
+                },
+                "example": {
+                  "@odata.context": "$metadata#HandlingUnitItem",
+                  "value": [
+                    {
+                      "HandlingUnitExternalID": "300028253",
+                      "Warehouse": "",
+                      "StockItemUUID": "00000000-0000-0000-0000-000000000001",
+                      "HandlingUnitItem": "1",
+                      "HandlingUnitTypeOfContent": "1",
+                      "HandlingUnitNestedExternalID": "00000000000000000000",
+                      "HandlingUnitReferenceDocument": "4031",
+                      "HandlingUnitRefDocumentItem": "000001",
+                      "Material": "TG11",
+                      "Batch": "",
+                      "Plant": "1010",
+                      "StorageLocation": "101B",
+                      "HandlingUnitQuantity": 3,
+                      "HandlingUnitQuantityUnit": "PC",
+                      "HandlingUnitAltUnitOfMeasure": "PC",
+                      "HandlingUnitNrOfAuxPackgMat": 0
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HandlingUnitItemCollection": {
+        "type": "object",
+        "properties": {
+          "@odata.context": {
+            "type": "string"
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HandlingUnitItem"
+            }
+          }
+        }
+      },
+      "HandlingUnitItem": {
+        "type": "object",
+        "properties": {
+          "HandlingUnitExternalID": {
+            "type": "string"
+          },
+          "Warehouse": {
+            "type": "string"
+          },
+          "StockItemUUID": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "HandlingUnitItem": {
+            "type": "string"
+          },
+          "HandlingUnitTypeOfContent": {
+            "type": "string"
+          },
+          "HandlingUnitNestedExternalID": {
+            "type": "string"
+          },
+          "HandlingUnitReferenceDocument": {
+            "type": "string"
+          },
+          "HandlingUnitRefDocumentItem": {
+            "type": "string"
+          },
+          "Material": {
+            "type": "string"
+          },
+          "Batch": {
+            "type": "string"
+          },
+          "Plant": {
+            "type": "string"
+          },
+          "StorageLocation": {
+            "type": "string"
+          },
+          "HandlingUnitQuantity": {
+            "type": "number"
+          },
+          "HandlingUnitQuantityUnit": {
+            "type": "string"
+          },
+          "HandlingUnitAltUnitOfMeasure": {
+            "type": "string"
+          },
+          "HandlingUnitNrOfAuxPackgMat": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
